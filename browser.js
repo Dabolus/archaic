@@ -1,11 +1,11 @@
 // browser es module entrypoint transpiled to ES5 and commonjs at dist/browser.js
 
-import ow from 'ow'
+import ow from "ow";
 
-import context from './lib/browser-context'
-import primitive from './lib/primitive'
+import context from "./lib/browser-context";
+import archaic from "./lib/archaic";
 
-import raf from 'raf'
+import raf from "raf";
 
 /**
  * Reproduces the given input image using geometric primitives.
@@ -14,7 +14,7 @@ import raf from 'raf'
  *
  * Returns a Promise for the generated model.
  *
- * @name primitive
+ * @name archaic
  * @function
  *
  * @param {Object} opts - Configuration options
@@ -34,76 +34,78 @@ import raf from 'raf'
  * @return {Promise}
  */
 export default async (opts) => {
-  const {
-    input,
-    output,
-    onStep,
-    numSteps = 200,
-    ...rest
-  } = opts
+  const { input, output, onStep, numSteps = 200, ...rest } = opts;
 
-  ow(opts, ow.object.label('opts'))
-  ow(input, ow.any(
-    ow.string.nonEmpty.label('input'),
-    ow.object.instanceOf(global.ImageData).label('input'),
-    ow.object.instanceOf(global.Image).label('input')
-  ))
-  ow(numSteps, ow.number.integer.positive.label('numSteps'))
+  ow(opts, ow.object.label("opts"));
+  ow(
+    input,
+    ow.any(
+      ow.string.nonEmpty.label("input"),
+      ow.object.instanceOf(global.ImageData).label("input"),
+      ow.object.instanceOf(global.Image).label("input")
+    )
+  );
+  ow(numSteps, ow.number.integer.positive.label("numSteps"));
 
   if (output) {
-    ow(output, ow.any(
-      ow.string.nonEmpty.label(output),
-      ow.object.instanceOf(global.HTMLCanvasElement).label(output)
-    ))
+    ow(
+      output,
+      ow.any(
+        ow.string.nonEmpty.label(output),
+        ow.object.instanceOf(global.HTMLCanvasElement).label(output)
+      )
+    );
   }
 
-  const target = await context.loadImage(input)
-  const canvas = output && await context.loadCanvas(output, 'output')
-  const ctx = canvas && canvas.getContext('2d')
-  const scratch = canvas && document.createElement('canvas')
-  if (ctx) context.enableContextAntialiasing(ctx)
+  const target = await context.loadImage(input);
+  const canvas = output && (await context.loadCanvas(output, "output"));
+  const ctx = canvas && canvas.getContext("2d");
+  const scratch = canvas && document.createElement("canvas");
+  if (ctx) context.enableContextAntialiasing(ctx);
 
-  const { model, step } = await primitive({
+  const { model, step } = await archaic({
     ...rest,
     context,
     target,
     onStep: async (model, step) => {
-      if (onStep) await onStep(model, step)
+      if (onStep) await onStep(model, step);
 
       if (ctx) {
-        const { width, height } = model.current
+        const { width, height } = model.current;
 
         if (canvas.width === width && canvas.height === height) {
           // output canvas is the same size as current working buffer,
           // so just copy data over (efficient)
-          ctx.putImageData(model.current, 0, 0)
+          ctx.putImageData(model.current, 0, 0);
         } else {
           // output canvas is different size than current working buffer,
           // so resize into temp canvas before drawing (less efficient)
-          scratch.width = width
-          scratch.height = height
-          const ctx2 = scratch.getContext('2d')
-          ctx2.putImageData(model.current, 0, 0)
-          ctx.drawImage(scratch, 0, 0, canvas.width, canvas.height)
+          scratch.width = width;
+          scratch.height = height;
+          const ctx2 = scratch.getContext("2d");
+          ctx2.putImageData(model.current, 0, 0);
+          ctx.drawImage(scratch, 0, 0, canvas.width, canvas.height);
         }
       }
-    }
-  })
+    },
+  });
 
   // TODO: clean this iteration up and use web workers
-  let current = 0
+  let current = 0;
   const update = () => {
-    console.log('step', current, '; score', model.score)
-    step(current)
-      .then((candidates) => {
-        if (candidates <= 0 || ++current >= numSteps) return
+    console.log("step", current, "; score", model.score);
+    step(current).then(
+      (candidates) => {
+        if (candidates <= 0 || ++current >= numSteps) return;
 
-        raf(update)
-      }, (err) => {
-        console.error('primitive error', err)
-      })
-  }
+        raf(update);
+      },
+      (err) => {
+        console.error("archaic error", err);
+      }
+    );
+  };
 
-  raf(update)
-  return model
-}
+  raf(update);
+  return model;
+};

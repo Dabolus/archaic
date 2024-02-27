@@ -1,39 +1,36 @@
-import test from 'ava'
-import path from 'path'
+import test from "ava";
+import path from "path";
 
-import primitive from './main'
+import archaic from "./main";
 
-const fixturesPath = path.join(__dirname, 'media')
+const fixturesPath = path.join(__dirname, "media");
 
-const fixtures = [
-  'monalisa.png',
-  'lena.png'
-]
+const fixtures = ["monalisa.png", "lena.png"];
 
 const shapeTypes = [
-  'triangle',
-  'ellipse',
-  'rotated-ellipse',
-  'rectangle',
-  'rotated-rectangle',
-  'random'
-]
+  "triangle",
+  "ellipse",
+  "rotated-ellipse",
+  "rectangle",
+  "rotated-rectangle",
+  "random",
+];
 
 fixtures.forEach((fixture) => {
-  const input = path.join(fixturesPath, fixture)
+  const input = path.join(fixturesPath, fixture);
 
   shapeTypes.forEach((shapeType) => {
     test(`${fixture} - ${shapeType}`, async (t) => {
-      const model = await primitive({
+      const model = await archaic({
         input,
         shapeType,
         numSteps: 10,
         numCandidateShapes: 5,
         numCandidateMutations: 30,
-        log: console.log.bind(console)
-      })
+        log: console.log.bind(console),
+      });
 
-      t.true(model.score < 1)
-    })
-  })
-})
+      t.true(model.score < 1);
+    });
+  });
+});

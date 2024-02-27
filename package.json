@@ -1,11 +1,11 @@
 {
-  "name": "primitive",
+  "name": "archaic",
   "version": "1.0.1",
   "description": "Reproduce images from geometric primitives.",
   "main": "main.js",
   "module": "module.js",
   "browser": "dist/browser.js",
-  "repository": "transitive-bullshit/primitive",
+  "repository": "Dabolus/archaic",
   "author": "Travis Fischer <travis@automagical.ai>",
   "license": "MIT",
   "reveal": true,
@@ -23,6 +23,10 @@
     "node": ">=8"
   },
   "keywords": [
+    "archaic",
+    "archaic.js",
+    "archaicjs",
+    "archaic-js",
     "primitive",
     "primitive.js",
     "primitivejs",

@@ -1,20 +1,15 @@
 // node es module entrypoint
 
-import ow from 'ow'
-import path from 'path'
-import rmfr from 'rmfr'
-import tempy from 'tempy'
-import Time from 'time-diff'
+import ow from "ow";
+import path from "path";
+import rmfr from "rmfr";
+import tempy from "tempy";
+import Time from "time-diff";
 
-import context from './lib/context'
-import primitive from './lib/primitive'
+import context from "./lib/context";
+import archaic from "./lib/archaic";
 
-const supportedOutputFormats = new Set([
-  'png',
-  'jpg',
-  'svg',
-  'gif'
-])
+const supportedOutputFormats = new Set(["png", "jpg", "svg", "gif"]);
 
 /**
  * Reproduces the given input image using geometric primitives.
@@ -27,7 +22,7 @@ const supportedOutputFormats = new Set([
  * - svg
  * - gif
  *
- * @name primitive
+ * @name archaic
  * @function
  *
  * @param {Object} opts - Configuration options
@@ -47,80 +42,73 @@ const supportedOutputFormats = new Set([
  * @return {Promise}
  */
 export default async (opts) => {
-  const {
-    input,
-    output,
-    onStep,
-    numSteps = 200,
-    nthFrame = 0,
-    ...rest
-  } = opts
+  const { input, output, onStep, numSteps = 200, nthFrame = 0, ...rest } = opts;
 
-  ow(opts, ow.object.label('opts'))
-  ow(input, ow.string.nonEmpty.label('input'))
-  ow(nthFrame, ow.number.integer)
-  ow(numSteps, ow.number.integer.positive.label('numSteps'))
-  if (output) ow(output, ow.string.nonEmpty.label('output'))
+  ow(opts, ow.object.label("opts"));
+  ow(input, ow.string.nonEmpty.label("input"));
+  ow(nthFrame, ow.number.integer);
+  ow(numSteps, ow.number.integer.positive.label("numSteps"));
+  if (output) ow(output, ow.string.nonEmpty.label("output"));
 
-  const ext = output && path.extname(output).slice(1).toLowerCase()
-  const isGIF = (ext === 'gif')
+  const ext = output && path.extname(output).slice(1).toLowerCase();
+  const isGIF = ext === "gif";
 
   if (output && !supportedOutputFormats.has(ext)) {
-    throw new Error(`unsupported output format "${ext}"`)
+    throw new Error(`unsupported output format "${ext}"`);
   }
 
-  const target = await context.loadImage(input)
+  const target = await context.loadImage(input);
 
-  const tempDir = isGIF && tempy.directory()
-  const tempOutput = isGIF && path.join(tempDir, 'frame-%d.png')
-  const frames = []
+  const tempDir = isGIF && tempy.directory();
+  const tempOutput = isGIF && path.join(tempDir, "frame-%d.png");
+  const frames = [];
 
-  const { model, step } = await primitive({
+  const { model, step } = await archaic({
     ...rest,
     context,
     target,
     onStep: async (model, step) => {
-      if (onStep) await onStep(model, step)
+      if (onStep) await onStep(model, step);
 
       if (isGIF) {
         if (nthFrame <= 0 || (step - 1) % nthFrame === 0) {
-          const frame = tempOutput.replace('%d', frames.length)
-          await context.saveImage(model.current, frame)
-          frames.push(frame)
+          const frame = tempOutput.replace("%d", frames.length);
+          await context.saveImage(model.current, frame);
+          frames.push(frame);
         }
       } else if (output) {
         if (nthFrame > 0 && (step - 1) % nthFrame === 0) {
-          const frame = output.replace('.', `-${step - 1}.`)
-          await context.saveImage(model.current, frame, opts)
+          const frame = output.replace(".", `-${step - 1}.`);
+          await context.saveImage(model.current, frame, opts);
         }
       }
-    }
-  })
+    },
+  });
 
-  const time = new Time()
+  const time = new Time();
 
   for (let s = 1; s <= numSteps; ++s) {
-    time.start(`step ${s}`)
+    time.start(`step ${s}`);
 
-    const candidates = await step(s)
+    const candidates = await step(s);
 
     console.log(`${s})`, {
       time: time.end(`step ${s}`),
       candidates,
-      score: model.score
-    })
+      score: model.score,
+    });
 
-    if (!candidates) break
+    if (!candidates) break;
   }
 
   if (output) {
     if (isGIF) {
-      await context.saveGIF(frames, output, opts)
-      await rmfr(tempDir)
+      await context.saveGIF(frames, output, opts);
+      await rmfr(tempDir);
     } else {
-      await context.saveImage(model.current, output, opts)
+      await context.saveImage(model.current, output, opts);
     }
   }
 
-  return model
-}
+  return model;
+};
