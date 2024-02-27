@@ -1,26 +1,26 @@
-import test from "ava";
-import path from "path";
+import { test, expect } from 'bun:test';
+import path from 'node:path';
 
-import archaic from "./main";
+import archaic from './main';
 
-const fixturesPath = path.join(__dirname, "media");
+const fixturesPath = path.join(__dirname, 'media');
 
-const fixtures = ["monalisa.png", "lena.png"];
+const fixtures = ['monalisa.png', 'lena.png'];
 
 const shapeTypes = [
-  "triangle",
-  "ellipse",
-  "rotated-ellipse",
-  "rectangle",
-  "rotated-rectangle",
-  "random",
+  'triangle',
+  'ellipse',
+  'rotated-ellipse',
+  'rectangle',
+  'rotated-rectangle',
+  'random',
 ];
 
 fixtures.forEach((fixture) => {
   const input = path.join(fixturesPath, fixture);
 
   shapeTypes.forEach((shapeType) => {
-    test(`${fixture} - ${shapeType}`, async (t) => {
+    test(`${fixture} - ${shapeType}`, async () => {
       const model = await archaic({
         input,
         shapeType,
@@ -30,7 +30,7 @@ fixtures.forEach((fixture) => {
         log: console.log.bind(console),
       });
 
-      t.true(model.score < 1);
+      expect(model.score).toBeLessThan(1);
     });
   });
 });
