@@ -6,7 +6,7 @@
   "module": "module.js",
   "browser": "dist/browser.js",
   "repository": "Dabolus/archaic",
-  "author": "Travis Fischer <travis@automagical.ai>",
+  "author": "Giorgio Garasto (Dabolus) <giorgio@garasto.me>",
   "license": "MIT",
   "reveal": true,
   "scripts": {
