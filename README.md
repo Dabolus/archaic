@@ -20,6 +20,10 @@
 
 ```bash
 npm install --save archaic
+# or
+yarn add archaic
+# or
+bun install archaic
 ```
 
 ## Usage
