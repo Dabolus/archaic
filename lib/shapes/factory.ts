@@ -47,7 +47,7 @@ interface ShapeTypeToOptions {
     | TriangleOptions;
 }
 
-const randomShapeType = () => SHAPES[int(SHAPES.length - 1)];
+const randomShapeType = () => SHAPES[int(0, SHAPES.length - 1)];
 
 const factory = <T extends ShapeType>(
   shapeType: T,
