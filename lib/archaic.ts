@@ -2,6 +2,7 @@ import ow from 'ow';
 import core from './core.js';
 import Model from './model.js';
 import type { ShapeType } from './shapes/factory.js';
+import type { ContextImageData } from './context.js';
 
 export type ArchaicContext =
   | typeof import('./context.js').default
@@ -9,11 +10,7 @@ export type ArchaicContext =
 
 export interface ArchaicOptions {
   context: ArchaicContext;
-  target: {
-    width: number;
-    height: number;
-    data: Uint8Array | Uint8ClampedArray;
-  };
+  target: ContextImageData;
   onStep?: (model: Model, step: number) => void;
   outputSize?: number;
   minEnergy?: number;

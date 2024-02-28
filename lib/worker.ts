@@ -3,8 +3,8 @@ import type { ContextImageData } from './context.js';
 import type Shape from './shapes/shape.js';
 
 export type WorkerContext =
-  | typeof import('./context.js')
-  | typeof import('./browser-context.js');
+  | typeof import('./context.js').default
+  | typeof import('./browser-context.js').default;
 
 export interface WorkerOptions {
   context: WorkerContext;

@@ -9,8 +9,8 @@ import type { ShapeType } from './shapes/factory.js';
 import { hex, type RGBAColor } from './color.js';
 
 export type ModelContext =
-  | typeof import('./context.js')
-  | typeof import('./browser-context.js');
+  | typeof import('./context.js').default
+  | typeof import('./browser-context.js').default;
 
 export interface ModelOptions {
   context: ModelContext;
