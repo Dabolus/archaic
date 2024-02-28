@@ -2,13 +2,21 @@
   "name": "archaic",
   "version": "1.0.1",
   "description": "Reproduce images from geometric primitives.",
-  "main": "dist/entrypoints/node.js",
-  "module": "dist/entrypoints/browser.js",
-  "browser": "dist/entrypoints/browser.js",
   "repository": "Dabolus/archaic",
   "author": "Giorgio Garasto (Dabolus) <giorgio@garasto.me>",
   "license": "MIT",
-  "reveal": true,
+  "type": "module",
+  "exports": {
+    "./browser": {
+      "types": "./dist/entrypoints/browser.d.ts",
+      "default": "./dist/entrypoints/browser.js"
+    },
+    "./node": {
+      "types": "./dist/entrypoints/node.d.ts",
+      "default": "./dist/entrypoints/node.js"
+    }
+  },
+  "sideEffects": false,
   "scripts": {
     "build": "bun run clean && tsc",
     "clean": "del dist",

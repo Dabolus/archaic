@@ -4,7 +4,7 @@ import path from 'node:path';
 import { temporaryFile } from 'tempy';
 import context from './context.js';
 
-const fixtures = path.join(__dirname, '..', 'media');
+const fixtures = path.resolve(import.meta.dir, '..', '..', 'media');
 
 test('monalisa.png', async () => {
   const img0 = await context.loadImage(path.join(fixtures, 'monalisa.png'));

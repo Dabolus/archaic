@@ -3,7 +3,7 @@ import path from 'node:path';
 import archaic from './node.js';
 import type { ShapeType } from '../lib/shapes/factory.js';
 
-const fixturesPath = path.join(__dirname, 'media');
+const fixturesPath = path.resolve(import.meta.dir, '..', '..', 'media');
 
 const fixtures = ['monalisa.png', 'lena.png'];
 

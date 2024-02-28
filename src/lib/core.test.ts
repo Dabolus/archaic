@@ -4,7 +4,7 @@ import context from './context.js';
 import core from './core.js';
 import Scanline from './scanline.js';
 
-const fixtures = path.join(__dirname, '..', 'media');
+const fixtures = path.resolve(import.meta.dir, '..', '..', 'media');
 
 test('difference', async () => {
   const image = await context.loadImage(path.join(fixtures, 'monalisa.png'));
