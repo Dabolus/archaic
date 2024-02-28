@@ -5,10 +5,10 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import tempy from 'tempy';
 import Time from 'time-diff';
-import context from './lib/context.js';
-import archaic from './lib/archaic.js';
-import type { ShapeType } from './lib/shapes/factory.js';
-import type Model from './lib/model.js';
+import context from '../lib/context.js';
+import archaic from '../lib/archaic.js';
+import type { ShapeType } from '../lib/shapes/factory.js';
+import type Model from '../lib/model.js';
 
 const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
 

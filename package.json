@@ -2,22 +2,21 @@
   "name": "archaic",
   "version": "1.0.1",
   "description": "Reproduce images from geometric primitives.",
-  "main": "node.js",
-  "module": "browser.js",
-  "browser": "browser.js",
+  "main": "dist/entrypoints/node.js",
+  "module": "dist/entrypoints/browser.js",
+  "browser": "dist/entrypoints/browser.js",
   "repository": "Dabolus/archaic",
   "author": "Giorgio Garasto (Dabolus) <giorgio@garasto.me>",
   "license": "MIT",
   "reveal": true,
   "scripts": {
-    "build": "bun run clean && rollup -c",
-    "start": "bun run clean && rollup -c -w",
+    "build": "bun run clean && tsc",
     "clean": "del dist",
     "prepublishOnly": "bun run build",
     "test": "bun test"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=18"
   },
   "keywords": [
     "archaic",
@@ -42,18 +41,8 @@
   ],
   "devDependencies": {
     "@types/bun": "^1.0.8",
-    "babel-core": "^6.26.3",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
     "del-cli": "^1.1.0",
     "eslint": "^8.57.0",
-    "rollup": "^0.59.4",
-    "rollup-plugin-babel": "^3.0.4",
-    "rollup-plugin-commonjs": "^9.1.3",
-    "rollup-plugin-node-resolve": "^3.3.0",
     "typescript": "^5.3.3",
     "typescript-eslint": "^7.1.0"
   },

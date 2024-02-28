@@ -1,9 +1,9 @@
 import ow from 'ow';
 import raf from 'raf';
-import context from './lib/browser-context.js';
-import archaic from './lib/archaic.js';
-import type { ShapeType } from './lib/shapes/factory.js';
-import type Model from './lib/model.js';
+import context from '../lib/browser-context.js';
+import archaic from '../lib/archaic.js';
+import type { ShapeType } from '../lib/shapes/factory.js';
+import type Model from '../lib/model.js';
 
 export interface ArchaicBrowserOptions {
   input: string | HTMLImageElement | ImageData;

@@ -1,7 +1,7 @@
 import { test, expect } from 'bun:test';
 import path from 'node:path';
 import archaic from './node.js';
-import type { ShapeType } from './lib/shapes/factory.js';
+import type { ShapeType } from '../lib/shapes/factory.js';
 
 const fixturesPath = path.join(__dirname, 'media');
 
