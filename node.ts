@@ -5,10 +5,28 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import tempy from 'tempy';
 import Time from 'time-diff';
-import context from './lib/context';
-import archaic from './lib/archaic';
+import context from './lib/context.js';
+import archaic from './lib/archaic.js';
+import type { ShapeType } from './lib/shapes/factory.js';
+import type Model from './lib/model.js';
 
 const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
+
+export interface ArchaicNodeOptions {
+  input: string;
+  output?: string;
+  numSteps?: number;
+  nthFrame?: number;
+  minEnergy?: number;
+  shapeAlpha?: number;
+  shapeType?: ShapeType;
+  numCandidates?: number;
+  numCandidateShapes?: number;
+  numCandidateMutations?: number;
+  numCandidateExtras?: number;
+  onStep?: (model: Model, step: number) => Promise<void>;
+  log?: (message?: unknown, ...optionalParams: unknown[]) => void;
+}
 
 /**
  * Reproduces the given input image using geometric primitives.
@@ -28,6 +46,7 @@ const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
  * @param {string} opts.input - Input image to process (can be a local path, http url, or data url)
  * @param {string} [opts.output] - Path to generate output image
  * @param {number} [opts.numSteps=200] - Number of steps to process [1, 1000]
+ * @param {number} [opts.nthFrame=0] - Save every nth frame [0, 1000]
  * @param {number} [opts.minEnergy] - Minimum energy to stop processing early [0, 1]
  * @param {number} [opts.shapeAlpha=128] - Alpha opacity of shapes [0, 255]
  * @param {string} [opts.shapeType=traingle] - Type of shapes to use
@@ -40,10 +59,9 @@ const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
  *
  * @return {Promise}
  */
-export default async (opts) => {
+export default async (opts: ArchaicNodeOptions) => {
   const { input, output, onStep, numSteps = 200, nthFrame = 0, ...rest } = opts;
 
-  ow(opts, ow.object.label('opts'));
   ow(input, ow.string.nonEmpty.label('input'));
   ow(nthFrame, ow.number.integer);
   ow(numSteps, ow.number.integer.positive.label('numSteps'));
@@ -52,7 +70,7 @@ export default async (opts) => {
   const ext = output && path.extname(output).slice(1).toLowerCase();
   const isGIF = ext === 'gif';
 
-  if (output && !supportedOutputFormats.has(ext)) {
+  if (output && !supportedOutputFormats.has(ext as string)) {
     throw new Error(`unsupported output format "${ext}"`);
   }
 
@@ -60,7 +78,7 @@ export default async (opts) => {
 
   const tempDir = isGIF && tempy.directory();
   const tempOutput = isGIF && path.join(tempDir, 'frame-%d.png');
-  const frames = [];
+  const frames: string[] = [];
 
   const { model, step } = await archaic({
     ...rest,
@@ -69,10 +87,10 @@ export default async (opts) => {
     onStep: async (model, step) => {
       if (onStep) await onStep(model, step);
 
-      if (isGIF) {
+      if (isGIF && tempOutput) {
         if (nthFrame <= 0 || (step - 1) % nthFrame === 0) {
-          const frame = tempOutput.replace('%d', frames.length);
-          await context.saveImage(model.current, frame);
+          const frame = tempOutput.replace('%d', frames.length.toString());
+          await context.saveImage(model.current, frame, opts);
           frames.push(frame);
         }
       } else if (output) {

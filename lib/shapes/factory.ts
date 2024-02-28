@@ -17,7 +17,8 @@ export type ShapeType =
   | 'circle'
   | 'ellipse'
   | 'rotated-ellipse'
-  | 'triangle';
+  | 'triangle'
+  | 'random';
 
 const SHAPES: ShapeType[] = [
   // ellipse, rectangle and circle are redundant when chosing a random shape
@@ -37,6 +38,13 @@ interface ShapeTypeToOptions {
   ellipse: EllipseOptions;
   'rotated-ellipse': RotatedEllipseOptions;
   triangle: TriangleOptions;
+  random:
+    | RectangleOptions
+    | RotatedRectangleOptions
+    | Omit<EllipseOptions, 'circle'>
+    | EllipseOptions
+    | RotatedEllipseOptions
+    | TriangleOptions;
 }
 
 const randomShapeType = () => SHAPES[int(SHAPES.length - 1)];

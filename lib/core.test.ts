@@ -1,9 +1,8 @@
 import { test, expect } from 'bun:test';
 import path from 'node:path';
-
-import context from './context';
-import core from './core';
-import Scanline from './scanline';
+import context from './context.js';
+import core from './core.js';
+import Scanline from './scanline.js';
 
 const fixtures = path.join(__dirname, '..', 'media');
 
@@ -42,12 +41,12 @@ test('drawLines', async () => {
   const diff0 = core.difference(image, current);
   expect(diff0).toBeGreaterThan(0);
 
-  const lines = [];
+  const lines: Scanline[] = [];
   const c = { r: 255, g: 0, b: 0, a: 255 };
   const m = (image.width / 2) | 0;
 
   for (let i = 0; i < 16; ++i) {
-    lines.push(new Scanline(i, 5, m, 255));
+    lines.push(new Scanline(i, 5, m));
   }
 
   expect(lines.length).toBe(

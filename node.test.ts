@@ -1,13 +1,13 @@
 import { test, expect } from 'bun:test';
 import path from 'node:path';
-
-import archaic from './main';
+import archaic from './node.js';
+import type { ShapeType } from './lib/shapes/factory.js';
 
 const fixturesPath = path.join(__dirname, 'media');
 
 const fixtures = ['monalisa.png', 'lena.png'];
 
-const shapeTypes = [
+const shapeTypes: ShapeType[] = [
   'triangle',
   'ellipse',
   'rotated-ellipse',

@@ -1,11 +1,26 @@
 // browser es module entrypoint transpiled to ES5 and commonjs at dist/browser.js
 
-import ow from "ow";
+import ow from 'ow';
+import raf from 'raf';
+import context from './lib/browser-context.js';
+import archaic from './lib/archaic.js';
+import type { ShapeType } from './lib/shapes/factory.js';
+import type Model from './lib/model.js';
 
-import context from "./lib/browser-context";
-import archaic from "./lib/archaic";
-
-import raf from "raf";
+export interface ArchaicBrowserOptions {
+  input: string | HTMLImageElement | ImageData;
+  output?: string | HTMLCanvasElement;
+  numSteps?: number;
+  minEnergy?: number;
+  shapeAlpha?: number;
+  shapeType?: ShapeType;
+  numCandidates?: number;
+  numCandidateShapes?: number;
+  numCandidateMutations?: number;
+  numCandidateExtras?: number;
+  onStep?: (model: Model, step: number) => Promise<void>;
+  log?: (message?: unknown, ...optionalParams: unknown[]) => void;
+}
 
 /**
  * Reproduces the given input image using geometric primitives.
@@ -33,34 +48,39 @@ import raf from "raf";
  *
  * @return {Promise}
  */
-export default async (opts) => {
-  const { input, output, onStep, numSteps = 200, ...rest } = opts;
-
-  ow(opts, ow.object.label("opts"));
+export default async ({
+  input,
+  output,
+  onStep,
+  numSteps = 200,
+  ...rest
+}: ArchaicBrowserOptions) => {
   ow(
     input,
     ow.any(
-      ow.string.nonEmpty.label("input"),
-      ow.object.instanceOf(global.ImageData).label("input"),
-      ow.object.instanceOf(global.Image).label("input")
-    )
+      ow.string.nonEmpty.label('input'),
+      ow.object.instanceOf(ImageData).label('input'),
+      ow.object.instanceOf(Image).label('input'),
+    ),
   );
-  ow(numSteps, ow.number.integer.positive.label("numSteps"));
+  ow(numSteps, ow.number.integer.positive.label('numSteps'));
 
   if (output) {
     ow(
       output,
       ow.any(
-        ow.string.nonEmpty.label(output),
-        ow.object.instanceOf(global.HTMLCanvasElement).label(output)
-      )
+        ow.string.nonEmpty.label('output'),
+        ow.object.instanceOf(HTMLCanvasElement).label('output'),
+      ),
     );
   }
 
   const target = await context.loadImage(input);
-  const canvas = output && (await context.loadCanvas(output, "output"));
-  const ctx = canvas && canvas.getContext("2d");
-  const scratch = canvas && document.createElement("canvas");
+  const canvas = (output &&
+    (await context.loadCanvas(output, 'output'))) as HTMLCanvasElement;
+  const ctx = (canvas && canvas.getContext('2d')) as CanvasRenderingContext2D;
+  const scratch = (canvas &&
+    document.createElement('canvas')) as HTMLCanvasElement;
   if (ctx) context.enableContextAntialiasing(ctx);
 
   const { model, step } = await archaic({
@@ -76,14 +96,14 @@ export default async (opts) => {
         if (canvas.width === width && canvas.height === height) {
           // output canvas is the same size as current working buffer,
           // so just copy data over (efficient)
-          ctx.putImageData(model.current, 0, 0);
+          ctx.putImageData(model.current as ImageData, 0, 0);
         } else {
           // output canvas is different size than current working buffer,
           // so resize into temp canvas before drawing (less efficient)
           scratch.width = width;
           scratch.height = height;
-          const ctx2 = scratch.getContext("2d");
-          ctx2.putImageData(model.current, 0, 0);
+          const ctx2 = scratch.getContext('2d')!;
+          ctx2.putImageData(model.current as ImageData, 0, 0);
           ctx.drawImage(scratch, 0, 0, canvas.width, canvas.height);
         }
       }
@@ -93,16 +113,18 @@ export default async (opts) => {
   // TODO: clean this iteration up and use web workers
   let current = 0;
   const update = () => {
-    console.log("step", current, "; score", model.score);
+    console.log('step', current, '; score', model.score);
     step(current).then(
       (candidates) => {
-        if (candidates <= 0 || ++current >= numSteps) return;
+        if ((candidates as number) <= 0 || ++current >= numSteps) {
+          return;
+        }
 
         raf(update);
       },
       (err) => {
-        console.error("archaic error", err);
-      }
+        console.error('archaic error', err);
+      },
     );
   };
 

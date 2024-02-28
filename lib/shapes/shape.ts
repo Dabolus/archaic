@@ -22,8 +22,8 @@ export default abstract class Shape {
   }
 
   abstract copy(): Shape;
-  abstract mutate(): void;
+  abstract mutate(): Shape;
   abstract rasterize(): Scanline[];
   abstract draw(ctx: CanvasRenderingContext2D, scale: number): void;
-  abstract toSVG(): string;
+  abstract toSVG(attrs?: string): string;
 }

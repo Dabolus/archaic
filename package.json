@@ -2,9 +2,9 @@
   "name": "archaic",
   "version": "1.0.1",
   "description": "Reproduce images from geometric primitives.",
-  "main": "main.js",
-  "module": "module.js",
-  "browser": "dist/browser.js",
+  "main": "node.js",
+  "module": "browser.js",
+  "browser": "browser.js",
   "repository": "Dabolus/archaic",
   "author": "Giorgio Garasto (Dabolus) <giorgio@garasto.me>",
   "license": "MIT",
@@ -60,7 +60,6 @@
     "update-markdown-jsdoc": "^1.0.6"
   },
   "dependencies": {
-    "chromatism": "^3.0.0",
     "execa": "^0.10.0",
     "get-pixels": "^3.3.0",
     "ndarray": "^1.0.18",

@@ -1,34 +1,52 @@
 import ow from 'ow';
+import core from './core.js';
+import Model from './model.js';
+import type { ShapeType } from './shapes/factory.js';
 
-import core from './core';
-import Model from './model';
+export type ArchaicContext =
+  | typeof import('./context.js').default
+  | typeof import('./browser-context.js').default;
 
-const noop = () => {};
+export interface ArchaicOptions {
+  context: ArchaicContext;
+  target: {
+    width: number;
+    height: number;
+    data: Uint8Array | Uint8ClampedArray;
+  };
+  onStep?: (model: Model, step: number) => void;
+  outputSize?: number;
+  minEnergy?: number;
+  shapeAlpha?: number;
+  shapeType?: ShapeType;
+  numCandidates?: number;
+  numCandidateShapes?: number;
+  numCandidateMutations?: number;
+  numCandidateExtras?: number;
+  log?: (message?: unknown, ...optionalParams: unknown[]) => void;
+}
 
-export default async (opts) => {
-  const {
-    context,
-    target,
-    onStep,
+export default async ({
+  context,
+  target,
+  onStep,
 
-    // inputSize = undefined, // TODO: support resizing target
-    outputSize = undefined,
+  // inputSize = undefined, // TODO: support resizing target
+  outputSize = undefined,
 
-    minEnergy = undefined,
+  minEnergy = undefined,
 
-    shapeAlpha = 128,
-    shapeType = 'triangle',
+  shapeAlpha = 128,
+  shapeType = 'triangle',
 
-    numCandidates = 1, // [ 1, 32 ]
-    numCandidateShapes = 50, // [ 10, 300 ]
-    numCandidateMutations = 100, // [ 10, 500 ]
-    numCandidateExtras = 0, // [ 0, 16 ]
+  numCandidates = 1, // [ 1, 32 ]
+  numCandidateShapes = 50, // [ 10, 300 ]
+  numCandidateMutations = 100, // [ 10, 500 ]
+  numCandidateExtras = 0, // [ 0, 16 ]
 
-    log = noop,
-  } = opts;
-
+  log = () => {},
+}: ArchaicOptions) => {
   // validate options
-  ow(opts, ow.object.plain.label('opts'));
   ow(target, ow.object.label('target'));
   ow(target.width, ow.number.positive.integer.label('target.width'));
   ow(target.height, ow.number.positive.integer.label('target.height'));
@@ -63,8 +81,8 @@ export default async (opts) => {
     numCandidates,
   });
 
-  const step = async (index) => {
-    await onStep(model, step);
+  const step = async (index: number): Promise<boolean | number> => {
+    await onStep?.(model, step);
 
     const candidates = model.step({
       shapeType,

@@ -2,8 +2,7 @@ import { test, expect } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import tempy from 'tempy';
-
-import context from './context';
+import context from './context.js';
 
 const fixtures = path.join(__dirname, '..', 'media');
 

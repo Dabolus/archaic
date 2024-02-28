@@ -1,12 +1,22 @@
 import { int } from './random.js';
-import shapeFactory from './shapes/factory.js';
+import shapeFactory, { ShapeType } from './shapes/factory.js';
+import type Shape from './shapes/shape.js';
+import type Worker from './worker.js';
+
+export interface StateOptions {
+  worker: Worker;
+  shape: Shape;
+  alpha?: number;
+}
 
 export default class State {
-  constructor(opts) {
-    if (!opts) return;
+  public worker: Worker;
+  public shape: Shape;
+  public score: number;
+  public alpha: number;
+  public mutateAlpha: boolean;
 
-    const { worker, shape, alpha } = opts;
-
+  constructor({ worker, shape, alpha }: StateOptions) {
     this.worker = worker;
     this.shape = shape;
     this.score = -1;
@@ -20,17 +30,18 @@ export default class State {
     }
   }
 
-  copy() {
-    const state = new State();
-    state.worker = this.worker;
-    state.shape = this.shape; // .copy()
+  copy(): State {
+    const state = new State({
+      worker: this.worker,
+      shape: this.shape, // .copy()
+    });
     state.score = this.score;
     state.alpha = this.alpha;
     state.mutateAlpha = this.mutateAlpha;
     return state;
   }
 
-  energy() {
+  energy(): number {
     if (this.score < 0) {
       this.score = this.worker.energy(this.shape, this.alpha);
     }
@@ -38,7 +49,7 @@ export default class State {
     return this.score;
   }
 
-  mutate() {
+  mutate(): State {
     const state = this.copy();
     state.shape = state.shape.mutate();
     if (state.mutateAlpha) {
@@ -51,7 +62,7 @@ export default class State {
     return state;
   }
 
-  static create(worker, shapeType, alpha) {
+  static create(worker: Worker, shapeType: ShapeType, alpha: number): State {
     const shape = shapeFactory(shapeType, {
       width: worker.width,
       height: worker.height,
