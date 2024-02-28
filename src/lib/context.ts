@@ -2,7 +2,6 @@ import { exec } from 'node:child_process';
 import { promises as stream, type Readable } from 'node:stream';
 import fs from 'fs';
 import ndarray, { type NdArray } from 'ndarray';
-import ow from 'ow';
 import getPixels from 'get-pixels';
 import savePixels from 'save-pixels';
 import type { RGBAColor } from './color.js';
@@ -29,8 +28,6 @@ export const PARTIALS = true;
 export const platform = 'node';
 
 export const loadImage = async (input: string): Promise<ContextImageData> => {
-  ow(input, 'input', ow.string.nonEmpty);
-
   const result = await getPixelsPromise(input);
   const { data, shape } = result;
 
@@ -46,9 +43,6 @@ export const createImage = (
   height: number,
   color?: RGBAColor,
 ): ContextImageData => {
-  ow(width, 'width', ow.number.positive.integer);
-  ow(height, 'height', ow.number.positive.integer);
-
   const data = new Uint8ClampedArray(width * height * 4);
 
   if (color) {
@@ -73,9 +67,6 @@ export const saveImage = async (
   filename: string,
   _opts?: {},
 ): Promise<void> => {
-  ow(image, 'image', ow.object.nonEmpty);
-  ow(filename, 'filename', ow.string.nonEmpty);
-
   const pixels = ndarray(image.data, [image.height, image.width, 4]);
   const parts = filename.split('.');
   const format = parts[parts.length - 1] as 'png';
@@ -94,10 +85,6 @@ export const saveGIF = async (
     log?: (message?: unknown, ...optionalParams: unknown[]) => void;
   } = {},
 ): Promise<void> => {
-  ow(frames, 'frames', ow.array);
-  ow(filename, 'filename', ow.string.nonEmpty);
-  ow(opts, 'opts', ow.object.plain.nonEmpty);
-
   const {
     // gif output options
     gifski = {

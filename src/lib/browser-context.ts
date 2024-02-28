@@ -1,4 +1,3 @@
-import ow from 'ow';
 import { type RGBAColor, cssrgba } from './color.js';
 import type { ContextImageData } from './context.js';
 
@@ -8,16 +7,6 @@ export const platform = 'browser';
 export const loadImage = async (
   input: string | ImageData | HTMLImageElement,
 ): Promise<ContextImageData> => {
-  ow(
-    input,
-    'input',
-    ow.any(
-      ow.string.nonEmpty,
-      ow.object.instanceOf(ImageData),
-      ow.object.instanceOf(Image),
-    ),
-  );
-
   if (typeof input === 'string') {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -49,12 +38,6 @@ export const loadCanvas = async (
   value: string | HTMLCanvasElement,
   label = 'canvas',
 ): Promise<HTMLCanvasElement> => {
-  ow(
-    value,
-    label,
-    ow.any(ow.string.nonEmpty, ow.object.instanceOf(HTMLCanvasElement)),
-  );
-
   if (typeof value === 'string') {
     const canvas = document.querySelector(value);
 
@@ -86,9 +69,6 @@ export const createImage = (
   height: number,
   fillColor?: RGBAColor,
 ): ContextImageData => {
-  ow(width, 'width', ow.number.positive.integer);
-  ow(height, 'height', ow.number.positive.integer);
-
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;

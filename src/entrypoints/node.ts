@@ -1,4 +1,3 @@
-import ow from 'ow';
 import path from 'node:path';
 import os from 'node:os';
 import { promises as fs } from 'node:fs';
@@ -67,13 +66,6 @@ export interface ArchaicNodeOptions {
  */
 export default async (opts: ArchaicNodeOptions) => {
   const { input, output, onStep, numSteps = 200, nthFrame = 0, ...rest } = opts;
-
-  ow(input, 'input', ow.string.nonEmpty);
-  ow(nthFrame, 'nthFrame', ow.number.integer);
-  ow(numSteps, 'numSteps', ow.number.integer.positive);
-  if (output) {
-    ow(output, 'output', ow.string.nonEmpty);
-  }
 
   const ext = output && path.extname(output).slice(1).toLowerCase();
   const isGIF = ext === 'gif';

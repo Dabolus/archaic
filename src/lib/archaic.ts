@@ -1,4 +1,3 @@
-import ow from 'ow';
 import core from './core.js';
 import Model from './model.js';
 import type { ShapeType } from './shapes/factory.js';
@@ -43,27 +42,6 @@ export default async ({
 
   log = () => {},
 }: ArchaicOptions) => {
-  // validate options
-  ow(target, 'target', ow.object);
-  ow(target.width, 'target.width', ow.number.positive.integer);
-  ow(target.height, 'target.height', ow.number.positive.integer);
-  ow(target.data, ow.any(ow.uint8Array, ow.uint8ClampedArray));
-  ow(
-    shapeAlpha,
-    'shapeAlpha',
-    ow.number.integer.greaterThanOrEqual(0).lessThanOrEqual(255),
-  );
-  ow(shapeType, 'shapeType', ow.string.nonEmpty);
-  ow(numCandidates, 'numCandidates', ow.number.integer.positive);
-  ow(numCandidateShapes, 'numCandidateShapes', ow.number.integer.positive);
-  ow(
-    numCandidateMutations,
-    'numCandidateMutations',
-    ow.number.integer.positive,
-  );
-  ow(log, 'log', ow.function);
-  ow(onStep, 'onStep', ow.function);
-
   const backgroundColor = core.getMeanColor(target);
 
   const model = new Model({

@@ -61,7 +61,6 @@
   "dependencies": {
     "get-pixels": "^3.3.3",
     "ndarray": "^1.0.19",
-    "ow": "^1.1.1",
     "save-pixels": "^2.3.6"
   }
 }

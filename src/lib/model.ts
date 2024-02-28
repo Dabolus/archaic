@@ -1,4 +1,3 @@
-import ow from 'ow';
 import core from './core.js';
 import optimize, { type GetStateOptions } from './optimize.js';
 import Worker from './worker.js';
@@ -127,26 +126,10 @@ export default class Model {
   }
 
   step(opts: ModelStepOptions): number {
-    ow(opts, 'opts', ow.object.plain);
-    ow(opts.shapeType, 'shapeType', ow.string.nonEmpty);
-    ow(opts.shapeAlpha, 'shapeAlpha', ow.number.integer.positive);
-    ow(
-      opts.numCandidateShapes,
-      'numCandidateShapes',
-      ow.number.integer.positive,
-    );
-    ow(
-      opts.numCandidateMutations,
-      'numCandidateMutations',
-      ow.number.integer.positive,
-    );
-
     let state = this._getBestCandidateState(opts);
     this.add(state.shape, state.alpha);
 
     if (opts.numCandidateExtras) {
-      ow(opts.numCandidateExtras, 'numCandidateExtras', ow.number.integer);
-
       for (let i = 0; i < opts.numCandidateExtras; ++i) {
         state.worker.init(this.current, this.score);
         const a = state.energy();

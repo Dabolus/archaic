@@ -1,4 +1,3 @@
-import ow from 'ow';
 import context from '../lib/browser-context.js';
 import archaic from '../lib/archaic.js';
 import type { ShapeType } from '../lib/shapes/factory.js';
@@ -53,25 +52,6 @@ export default async ({
   log = () => {},
   ...rest
 }: ArchaicBrowserOptions) => {
-  ow(
-    input,
-    'input',
-    ow.any(
-      ow.string.nonEmpty,
-      ow.object.instanceOf(ImageData),
-      ow.object.instanceOf(Image),
-    ),
-  );
-  ow(numSteps, 'numSteps', ow.number.integer.positive);
-
-  if (output) {
-    ow(
-      output,
-      'output',
-      ow.any(ow.string.nonEmpty, ow.object.instanceOf(HTMLCanvasElement)),
-    );
-  }
-
   const target = await context.loadImage(input);
   const canvas = (output &&
     (await context.loadCanvas(output, 'output'))) as HTMLCanvasElement;
