@@ -8,6 +8,22 @@ import archaic from '../lib/archaic.js';
 import type { ShapeType } from '../lib/shapes/factory.js';
 import type Model from '../lib/model.js';
 
+export type { ShapeType } from '../lib/shapes/factory.js';
+export type { default as Shape } from '../lib/shapes/shape.js';
+export type {
+  ContextImageData,
+  default as ArchaicContext,
+  default as ModelContext,
+  default as WorkerContext,
+} from '../lib/context.js';
+export type {
+  default as Model,
+  ModelOptions,
+  ModelStepOptions,
+} from '../lib/model.js';
+export type { default as Worker } from '../lib/worker.js';
+export type { RGBAColor } from '../lib/color.js';
+
 const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
 
 const getTempDirectory = async () => {
