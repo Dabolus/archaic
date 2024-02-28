@@ -19,7 +19,7 @@ const getPixelsP = pify(getPixels);
 export const PARTIALS = true;
 export const platform = 'node';
 
-export const loadImage = async (input) => {
+export const loadImage = async (input: string): Promise<ContextImageData> => {
   ow(input, ow.string.label('input').nonEmpty);
 
   const result = await getPixelsP(input);
