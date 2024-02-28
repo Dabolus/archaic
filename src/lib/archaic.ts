@@ -44,29 +44,25 @@ export default async ({
   log = () => {},
 }: ArchaicOptions) => {
   // validate options
-  ow(target, ow.object.label('target'));
-  ow(target.width, ow.number.positive.integer.label('target.width'));
-  ow(target.height, ow.number.positive.integer.label('target.height'));
+  ow(target, 'target', ow.object);
+  ow(target.width, 'target.width', ow.number.positive.integer);
+  ow(target.height, 'target.height', ow.number.positive.integer);
   ow(target.data, ow.any(ow.uint8Array, ow.uint8ClampedArray));
   ow(
     shapeAlpha,
-    ow.number.integer
-      .greaterThanOrEqual(0)
-      .lessThanOrEqual(255)
-      .label('shapeAlpha'),
+    'shapeAlpha',
+    ow.number.integer.greaterThanOrEqual(0).lessThanOrEqual(255),
   );
-  ow(shapeType, ow.string.nonEmpty.label('shapeType'));
-  ow(numCandidates, ow.number.integer.positive.label('numCandidates'));
-  ow(
-    numCandidateShapes,
-    ow.number.integer.positive.label('numCandidateShapes'),
-  );
+  ow(shapeType, 'shapeType', ow.string.nonEmpty);
+  ow(numCandidates, 'numCandidates', ow.number.integer.positive);
+  ow(numCandidateShapes, 'numCandidateShapes', ow.number.integer.positive);
   ow(
     numCandidateMutations,
-    ow.number.integer.positive.label('numCandidateMutations'),
+    'numCandidateMutations',
+    ow.number.integer.positive,
   );
-  ow(log, ow.function.label('log'));
-  ow(onStep, ow.function.label('onStep'));
+  ow(log, 'log', ow.function);
+  ow(onStep, 'onStep', ow.function);
 
   const backgroundColor = core.getMeanColor(target);
 

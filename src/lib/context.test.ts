@@ -1,14 +1,14 @@
 import { test, expect } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import tempy from 'tempy';
+import { temporaryFile } from 'tempy';
 import context from './context.js';
 
 const fixtures = path.join(__dirname, '..', 'media');
 
 test('monalisa.png', async () => {
   const img0 = await context.loadImage(path.join(fixtures, 'monalisa.png'));
-  const temp = tempy.file({ extension: 'png' });
+  const temp = temporaryFile({ extension: 'png' });
   await context.saveImage(img0, temp);
   const img1 = await context.loadImage(temp);
 
@@ -18,7 +18,7 @@ test('monalisa.png', async () => {
 
 test('flower.jpg', async () => {
   const img0 = await context.loadImage(path.join(fixtures, 'flower.jpg'));
-  const temp = tempy.file({ extension: 'png' });
+  const temp = temporaryFile({ extension: 'png' });
   await context.saveImage(img0, temp);
   const img1 = await context.loadImage(temp);
 

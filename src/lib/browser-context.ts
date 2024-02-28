@@ -10,10 +10,11 @@ export const loadImage = async (
 ): Promise<ContextImageData> => {
   ow(
     input,
+    'input',
     ow.any(
-      ow.string.nonEmpty.label('input'),
-      ow.object.instanceOf(ImageData).label('input'),
-      ow.object.instanceOf(Image).label('input'),
+      ow.string.nonEmpty,
+      ow.object.instanceOf(ImageData),
+      ow.object.instanceOf(Image),
     ),
   );
 
@@ -50,10 +51,8 @@ export const loadCanvas = async (
 ): Promise<HTMLCanvasElement> => {
   ow(
     value,
-    ow.any(
-      ow.string.nonEmpty.label(label),
-      ow.object.instanceOf(HTMLCanvasElement).label(label),
-    ),
+    label,
+    ow.any(ow.string.nonEmpty, ow.object.instanceOf(HTMLCanvasElement)),
   );
 
   if (typeof value === 'string') {
@@ -87,8 +86,8 @@ export const createImage = (
   height: number,
   fillColor?: RGBAColor,
 ): ContextImageData => {
-  ow(width, ow.number.label('width').positive.integer);
-  ow(height, ow.number.label('height').positive.integer);
+  ow(width, 'width', ow.number.positive.integer);
+  ow(height, 'height', ow.number.positive.integer);
 
   const canvas = document.createElement('canvas');
   canvas.width = width;

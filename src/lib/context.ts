@@ -1,12 +1,23 @@
-import execa from 'execa';
+import { exec } from 'node:child_process';
+import { promises as stream, type Readable } from 'node:stream';
 import fs from 'fs';
-import ndarray from 'ndarray';
+import ndarray, { type NdArray } from 'ndarray';
 import ow from 'ow';
-import pify from 'pify';
-import pump from 'pump-promise';
 import getPixels from 'get-pixels';
 import savePixels from 'save-pixels';
 import type { RGBAColor } from './color.js';
+
+const execPromise = (cmd: string): Promise<string> =>
+  new Promise((resolve, reject) =>
+    exec(cmd, (error, stdout, stderr) =>
+      error ? reject(error) : resolve(stdout || stderr),
+    ),
+  );
+
+const getPixelsPromise = (path: string): Promise<NdArray<Uint8Array>> =>
+  new Promise((resolve, reject) =>
+    getPixels(path, (err, pixels) => (err ? reject(err) : resolve(pixels))),
+  );
 
 export interface ContextImageData {
   width: number;
@@ -14,15 +25,13 @@ export interface ContextImageData {
   data: Uint8Array | Uint8ClampedArray;
 }
 
-const getPixelsP = pify(getPixels);
-
 export const PARTIALS = true;
 export const platform = 'node';
 
 export const loadImage = async (input: string): Promise<ContextImageData> => {
-  ow(input, ow.string.label('input').nonEmpty);
+  ow(input, 'input', ow.string.nonEmpty);
 
-  const result = await getPixelsP(input);
+  const result = await getPixelsPromise(input);
   const { data, shape } = result;
 
   return {
@@ -37,8 +46,8 @@ export const createImage = (
   height: number,
   color?: RGBAColor,
 ): ContextImageData => {
-  ow(width, ow.number.label('width').positive.integer);
-  ow(height, ow.number.label('height').positive.integer);
+  ow(width, 'width', ow.number.positive.integer);
+  ow(height, 'height', ow.number.positive.integer);
 
   const data = new Uint8ClampedArray(width * height * 4);
 
@@ -64,14 +73,17 @@ export const saveImage = async (
   filename: string,
   _opts?: {},
 ): Promise<void> => {
-  ow(image, ow.object.label('image').nonEmpty);
-  ow(filename, ow.string.label('filename').nonEmpty);
+  ow(image, 'image', ow.object.nonEmpty);
+  ow(filename, 'filename', ow.string.nonEmpty);
 
   const pixels = ndarray(image.data, [image.height, image.width, 4]);
   const parts = filename.split('.');
-  const format = parts[parts.length - 1];
-  const stream = savePixels(pixels.transpose(1, 0, 2), format);
-  return pump(stream, fs.createWriteStream(filename));
+  const format = parts[parts.length - 1] as 'png';
+  const pixelsStream = savePixels(
+    pixels.transpose(1, 0, 2),
+    format,
+  ) as Readable;
+  return stream.pipeline(pixelsStream, fs.createWriteStream(filename));
 };
 
 export const saveGIF = async (
@@ -82,9 +94,9 @@ export const saveGIF = async (
     log?: (message?: unknown, ...optionalParams: unknown[]) => void;
   } = {},
 ): Promise<void> => {
-  ow(frames, ow.array.label('frames'));
-  ow(filename, ow.string.label('filename').nonEmpty);
-  ow(opts, ow.object.label('opts').plain.nonEmpty);
+  ow(frames, 'frames', ow.array);
+  ow(filename, 'filename', ow.string.nonEmpty);
+  ow(opts, 'opts', ow.object.plain.nonEmpty);
 
   const {
     // gif output options
@@ -118,7 +130,7 @@ export const saveGIF = async (
     opts.log(cmd);
   }
 
-  await execa.shell(cmd);
+  await execPromise(cmd);
 };
 
 export default {

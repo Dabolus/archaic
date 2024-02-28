@@ -41,21 +41,19 @@
   ],
   "devDependencies": {
     "@types/bun": "^1.0.8",
+    "@types/get-pixels": "^3.3.4",
+    "@types/ndarray": "^1.0.14",
+    "@types/save-pixels": "^2.3.4",
     "del-cli": "^1.1.0",
     "eslint": "^8.57.0",
+    "tempy": "^3.1.0",
     "typescript": "^5.3.3",
     "typescript-eslint": "^7.1.0"
   },
   "dependencies": {
-    "execa": "^0.10.0",
-    "get-pixels": "^3.3.0",
-    "ndarray": "^1.0.18",
-    "ow": "^0.4.0",
-    "pify": "^3.0.0",
-    "pump-promise": "^1.0.0",
-    "raf": "^3.4.0",
-    "save-pixels": "^2.3.4",
-    "tempy": "^0.2.1",
-    "time-diff": "^0.3.1"
+    "get-pixels": "^3.3.3",
+    "ndarray": "^1.0.19",
+    "ow": "^1.1.1",
+    "save-pixels": "^2.3.6"
   }
 }

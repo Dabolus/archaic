@@ -1,5 +1,4 @@
 import ow from 'ow';
-import raf from 'raf';
 import context from '../lib/browser-context.js';
 import archaic from '../lib/archaic.js';
 import type { ShapeType } from '../lib/shapes/factory.js';
@@ -56,21 +55,20 @@ export default async ({
 }: ArchaicBrowserOptions) => {
   ow(
     input,
+    'input',
     ow.any(
-      ow.string.nonEmpty.label('input'),
-      ow.object.instanceOf(ImageData).label('input'),
-      ow.object.instanceOf(Image).label('input'),
+      ow.string.nonEmpty,
+      ow.object.instanceOf(ImageData),
+      ow.object.instanceOf(Image),
     ),
   );
-  ow(numSteps, ow.number.integer.positive.label('numSteps'));
+  ow(numSteps, 'numSteps', ow.number.integer.positive);
 
   if (output) {
     ow(
       output,
-      ow.any(
-        ow.string.nonEmpty.label('output'),
-        ow.object.instanceOf(HTMLCanvasElement).label('output'),
-      ),
+      'output',
+      ow.any(ow.string.nonEmpty, ow.object.instanceOf(HTMLCanvasElement)),
     );
   }
 
@@ -114,18 +112,19 @@ export default async ({
   });
 
   // TODO: clean this iteration up and use web workers
-  const rafStep = (curr) =>
+  const rafStep = (curr: number): Promise<number | boolean> =>
     new Promise((resolve, reject) =>
-      raf(() => step(curr).then(resolve).catch(reject)),
+      requestAnimationFrame(() => step(curr).then(resolve).catch(reject)),
     );
 
   for (let s = 1; s <= numSteps; ++s) {
-    performance.mark(`step ${s}`);
-
+    performance.mark(`step ${s} start`);
     const candidates = await rafStep(s);
+    performance.mark(`step ${s} end`);
 
     log(`${s})`, {
-      time: performance.measure(`step ${s}`).duration,
+      time: performance.measure(`step ${s}`, `step ${s} start`, `step ${s} end`)
+        .duration,
       candidates,
       score: model.score,
     });
@@ -135,6 +134,7 @@ export default async ({
     }
   }
   performance.clearMarks();
+  performance.clearMeasures();
 
   return model;
 };

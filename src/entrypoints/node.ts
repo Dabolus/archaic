@@ -1,16 +1,22 @@
-// node es module entrypoint
-
 import ow from 'ow';
-import path from 'path';
-import { promises as fs } from 'fs';
-import tempy from 'tempy';
-import Time from 'time-diff';
+import path from 'node:path';
+import os from 'node:os';
+import { promises as fs } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+import { performance } from 'node:perf_hooks';
 import context from '../lib/context.js';
 import archaic from '../lib/archaic.js';
 import type { ShapeType } from '../lib/shapes/factory.js';
 import type Model from '../lib/model.js';
 
 const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
+
+const getTempDirectory = async () => {
+  const systemTempDir = await fs.realpath(os.tmpdir());
+  const tempDir = path.join(systemTempDir, randomUUID());
+  await fs.mkdir(tempDir, { recursive: true });
+  return tempDir;
+};
 
 export interface ArchaicNodeOptions {
   input: string;
@@ -62,11 +68,11 @@ export interface ArchaicNodeOptions {
 export default async (opts: ArchaicNodeOptions) => {
   const { input, output, onStep, numSteps = 200, nthFrame = 0, ...rest } = opts;
 
-  ow(input, ow.string.nonEmpty.label('input'));
-  ow(nthFrame, ow.number.integer);
-  ow(numSteps, ow.number.integer.positive.label('numSteps'));
+  ow(input, 'input', ow.string.nonEmpty);
+  ow(nthFrame, 'nthFrame', ow.number.integer);
+  ow(numSteps, 'numSteps', ow.number.integer.positive);
   if (output) {
-    ow(output, ow.string.nonEmpty.label('output'));
+    ow(output, 'output', ow.string.nonEmpty);
   }
 
   const ext = output && path.extname(output).slice(1).toLowerCase();
@@ -78,8 +84,8 @@ export default async (opts: ArchaicNodeOptions) => {
 
   const target = await context.loadImage(input);
 
-  const tempDir = isGIF && tempy.directory();
-  const tempOutput = isGIF && path.join(tempDir, 'frame-%d.png');
+  const tempDir = isGIF && (await getTempDirectory());
+  const tempOutput = tempDir && path.join(tempDir, 'frame-%d.png');
   const frames: string[] = [];
 
   const { model, step } = await archaic({
@@ -106,15 +112,14 @@ export default async (opts: ArchaicNodeOptions) => {
     },
   });
 
-  const time = new Time();
-
   for (let s = 1; s <= numSteps; ++s) {
-    time.start(`step ${s}`);
-
+    performance.mark(`step ${s} start`);
     const candidates = await step(s);
+    performance.mark(`step ${s} end`);
 
     console.log(`${s})`, {
-      time: time.end(`step ${s}`),
+      time: performance.measure(`step ${s}`, `step ${s} start`, `step ${s} end`)
+        .duration,
       candidates,
       score: model.score,
     });
@@ -123,9 +128,11 @@ export default async (opts: ArchaicNodeOptions) => {
       break;
     }
   }
+  performance.clearMarks();
+  performance.clearMeasures();
 
   if (output) {
-    if (isGIF) {
+    if (isGIF && tempDir) {
       await context.saveGIF(frames, output, opts);
       await fs.rm(tempDir, { recursive: true, force: true });
     } else {
