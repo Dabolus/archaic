@@ -68,9 +68,6 @@
     "pify": "^3.0.0",
     "pump-promise": "^1.0.0",
     "raf": "^3.4.0",
-    "random": "^2.0.12",
-    "random-int": "^1.0.0",
-    "random-normal": "^1.0.0",
     "save-pixels": "^2.3.4",
     "tempy": "^0.2.1",
     "time-diff": "^0.3.1"

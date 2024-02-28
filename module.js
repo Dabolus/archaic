@@ -1,15 +1,14 @@
 // node es module entrypoint
 
-import ow from "ow";
-import path from "path";
-import rmfr from "rmfr";
-import tempy from "tempy";
-import Time from "time-diff";
+import ow from 'ow';
+import path from 'path';
+import { promises as fs } from 'fs';
+import tempy from 'tempy';
+import Time from 'time-diff';
+import context from './lib/context';
+import archaic from './lib/archaic';
 
-import context from "./lib/context";
-import archaic from "./lib/archaic";
-
-const supportedOutputFormats = new Set(["png", "jpg", "svg", "gif"]);
+const supportedOutputFormats = new Set(['png', 'jpg', 'svg', 'gif']);
 
 /**
  * Reproduces the given input image using geometric primitives.
@@ -44,14 +43,14 @@ const supportedOutputFormats = new Set(["png", "jpg", "svg", "gif"]);
 export default async (opts) => {
   const { input, output, onStep, numSteps = 200, nthFrame = 0, ...rest } = opts;
 
-  ow(opts, ow.object.label("opts"));
-  ow(input, ow.string.nonEmpty.label("input"));
+  ow(opts, ow.object.label('opts'));
+  ow(input, ow.string.nonEmpty.label('input'));
   ow(nthFrame, ow.number.integer);
-  ow(numSteps, ow.number.integer.positive.label("numSteps"));
-  if (output) ow(output, ow.string.nonEmpty.label("output"));
+  ow(numSteps, ow.number.integer.positive.label('numSteps'));
+  if (output) ow(output, ow.string.nonEmpty.label('output'));
 
   const ext = output && path.extname(output).slice(1).toLowerCase();
-  const isGIF = ext === "gif";
+  const isGIF = ext === 'gif';
 
   if (output && !supportedOutputFormats.has(ext)) {
     throw new Error(`unsupported output format "${ext}"`);
@@ -60,7 +59,7 @@ export default async (opts) => {
   const target = await context.loadImage(input);
 
   const tempDir = isGIF && tempy.directory();
-  const tempOutput = isGIF && path.join(tempDir, "frame-%d.png");
+  const tempOutput = isGIF && path.join(tempDir, 'frame-%d.png');
   const frames = [];
 
   const { model, step } = await archaic({
@@ -72,13 +71,13 @@ export default async (opts) => {
 
       if (isGIF) {
         if (nthFrame <= 0 || (step - 1) % nthFrame === 0) {
-          const frame = tempOutput.replace("%d", frames.length);
+          const frame = tempOutput.replace('%d', frames.length);
           await context.saveImage(model.current, frame);
           frames.push(frame);
         }
       } else if (output) {
         if (nthFrame > 0 && (step - 1) % nthFrame === 0) {
-          const frame = output.replace(".", `-${step - 1}.`);
+          const frame = output.replace('.', `-${step - 1}.`);
           await context.saveImage(model.current, frame, opts);
         }
       }
@@ -104,7 +103,7 @@ export default async (opts) => {
   if (output) {
     if (isGIF) {
       await context.saveGIF(frames, output, opts);
-      await rmfr(tempDir);
+      await fs.rm(tempDir, { recursive: true, force: true });
     } else {
       await context.saveImage(model.current, output, opts);
     }

@@ -1,7 +1,6 @@
 import { test, expect } from 'bun:test';
-
-import context from '../context';
-import Triangle from './triangle';
+import context from '../context.js';
+import Triangle from './triangle.js';
 
 test('new Triangle()', async () => {
   const image = context.createImage(512, 512);
