@@ -1,5 +1,3 @@
-// browser es module entrypoint transpiled to ES5 and commonjs at dist/browser.js
-
 import ow from 'ow';
 import raf from 'raf';
 import context from './lib/browser-context.js';
@@ -53,6 +51,7 @@ export default async ({
   output,
   onStep,
   numSteps = 200,
+  log = () => {},
   ...rest
 }: ArchaicBrowserOptions) => {
   ow(
@@ -115,23 +114,27 @@ export default async ({
   });
 
   // TODO: clean this iteration up and use web workers
-  let current = 0;
-  const update = () => {
-    console.log('step', current, '; score', model.score);
-    step(current).then(
-      (candidates) => {
-        if ((candidates as number) <= 0 || ++current >= numSteps) {
-          return;
-        }
-
-        raf(update);
-      },
-      (err) => {
-        console.error('archaic error', err);
-      },
+  const rafStep = (curr) =>
+    new Promise((resolve, reject) =>
+      raf(() => step(curr).then(resolve).catch(reject)),
     );
-  };
 
-  raf(update);
+  for (let s = 1; s <= numSteps; ++s) {
+    performance.mark(`step ${s}`);
+
+    const candidates = await rafStep(s);
+
+    log(`${s})`, {
+      time: performance.measure(`step ${s}`).duration,
+      candidates,
+      score: model.score,
+    });
+
+    if (!candidates) {
+      break;
+    }
+  }
+  performance.clearMarks();
+
   return model;
 };
