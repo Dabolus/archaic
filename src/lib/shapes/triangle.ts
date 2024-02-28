@@ -5,12 +5,12 @@ import Shape, { ShapeOptions } from './shape.js';
 export interface TriangleOptions extends ShapeOptions {}
 
 export default class Triangle extends Shape {
-  public x1: number;
-  public y1: number;
-  public x2: number;
-  public y2: number;
-  public x3: number;
-  public y3: number;
+  public x1!: number;
+  public y1!: number;
+  public x2!: number;
+  public y2!: number;
+  public x3!: number;
+  public y3!: number;
 
   constructor(opts?: TriangleOptions) {
     super(opts);

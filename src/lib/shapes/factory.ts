@@ -8,6 +8,7 @@ import RotatedRectangle, {
   type RotatedRectangleOptions,
 } from './rotated-rectangle.js';
 import Triangle, { type TriangleOptions } from './triangle.js';
+import type Shape from './shape.js';
 
 export type ShapeType =
   | 'rectangle'
@@ -52,7 +53,7 @@ const randomShapeType = () => SHAPES[int(0, SHAPES.length - 1)];
 const factory = <T extends ShapeType>(
   shapeType: T,
   opts: ShapeTypeToOptions[T],
-) => {
+): Shape => {
   switch (shapeType) {
     case 'rectangle':
     case 'rect':

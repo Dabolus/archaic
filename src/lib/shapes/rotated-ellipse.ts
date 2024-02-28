@@ -6,11 +6,11 @@ import Shape, { ShapeOptions } from './shape.js';
 export interface RotatedEllipseOptions extends ShapeOptions {}
 
 export default class RotatedEllipse extends Shape {
-  public x: number;
-  public y: number;
-  public rx: number;
-  public ry: number;
-  public angle: number;
+  public x!: number;
+  public y!: number;
+  public rx!: number;
+  public ry!: number;
+  public angle!: number;
 
   constructor(opts?: RotatedEllipseOptions) {
     super(opts);

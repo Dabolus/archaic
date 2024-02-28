@@ -40,7 +40,7 @@ export default class Model {
   public colors: RGBAColor[];
   public scores: number[];
   public workers: Worker[];
-  public before: ContextImageData;
+  public before!: ContextImageData;
 
   constructor({
     context,

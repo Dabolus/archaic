@@ -6,11 +6,11 @@ import Shape, { ShapeOptions } from './shape.js';
 export interface RotatedRectangleOptions extends ShapeOptions {}
 
 export default class RotatedRectangle extends Shape {
-  public x1: number;
-  public y1: number;
-  public x2: number;
-  public y2: number;
-  public angle: number;
+  public x1!: number;
+  public y1!: number;
+  public x2!: number;
+  public y2!: number;
+  public angle!: number;
 
   constructor(opts?: RotatedRectangleOptions) {
     super(opts);

@@ -7,15 +7,15 @@ export interface EllipseOptions extends ShapeOptions {
 }
 
 export default class Ellipse extends Shape {
-  public circle: boolean;
-  public x: number;
-  public y: number;
-  public rx: number;
-  public ry: number;
-  public x1: number;
-  public y1: number;
-  public x2: number;
-  public y2: number;
+  public circle!: boolean;
+  public x!: number;
+  public y!: number;
+  public rx!: number;
+  public ry!: number;
+  public x1!: number;
+  public y1!: number;
+  public x2!: number;
+  public y2!: number;
 
   constructor(opts?: EllipseOptions) {
     super(opts);

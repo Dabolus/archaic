@@ -5,10 +5,10 @@ import Shape, { ShapeBounds, ShapeOptions } from './shape.js';
 export interface RectangleOptions extends ShapeOptions {}
 
 export default class Rectangle extends Shape {
-  public x1: number;
-  public y1: number;
-  public x2: number;
-  public y2: number;
+  public x1!: number;
+  public y1!: number;
+  public x2!: number;
+  public y2!: number;
 
   constructor(opts?: RectangleOptions) {
     super(opts);
