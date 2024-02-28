@@ -114,7 +114,9 @@ export const saveGIF = async (
   const cmd = ([executable] as (string | number | boolean)[])
     .concat(params)
     .join(' ');
-  if (opts.log) opts.log(cmd);
+  if (opts.log) {
+    opts.log(cmd);
+  }
 
   await execa.shell(cmd);
 };

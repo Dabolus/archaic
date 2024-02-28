@@ -144,7 +144,9 @@ export default class Model {
         const a = state.energy();
         state = optimize.hillClimb(state, opts.numCandidateMutations);
         const b = state.energy();
-        if (b <= a) break;
+        if (b <= a) {
+          break;
+        }
 
         this.add(state.shape, state.alpha);
       }

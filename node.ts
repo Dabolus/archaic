@@ -65,7 +65,9 @@ export default async (opts: ArchaicNodeOptions) => {
   ow(input, ow.string.nonEmpty.label('input'));
   ow(nthFrame, ow.number.integer);
   ow(numSteps, ow.number.integer.positive.label('numSteps'));
-  if (output) ow(output, ow.string.nonEmpty.label('output'));
+  if (output) {
+    ow(output, ow.string.nonEmpty.label('output'));
+  }
 
   const ext = output && path.extname(output).slice(1).toLowerCase();
   const isGIF = ext === 'gif';
@@ -85,7 +87,9 @@ export default async (opts: ArchaicNodeOptions) => {
     context,
     target,
     onStep: async (model, step) => {
-      if (onStep) await onStep(model, step);
+      if (onStep) {
+        await onStep(model, step);
+      }
 
       if (isGIF && tempOutput) {
         if (nthFrame <= 0 || (step - 1) % nthFrame === 0) {
@@ -115,7 +119,9 @@ export default async (opts: ArchaicNodeOptions) => {
       score: model.score,
     });
 
-    if (!candidates) break;
+    if (!candidates) {
+      break;
+    }
   }
 
   if (output) {

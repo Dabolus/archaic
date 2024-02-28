@@ -76,12 +76,16 @@ export default class Ellipse extends Shape {
 
       case 1:
         shape.rx = Math.max(1, Math.min(width - 1, shape.rx + normal() * m));
-        if (shape.circle) shape.ry = shape.rx;
+        if (shape.circle) {
+          shape.ry = shape.rx;
+        }
         break;
 
       case 2:
         shape.ry = Math.max(1, Math.min(height - 1, shape.ry + normal() * m));
-        if (shape.circle) shape.rx = shape.ry;
+        if (shape.circle) {
+          shape.rx = shape.ry;
+        }
         break;
     }
 

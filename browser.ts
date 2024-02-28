@@ -81,14 +81,18 @@ export default async ({
   const ctx = (canvas && canvas.getContext('2d')) as CanvasRenderingContext2D;
   const scratch = (canvas &&
     document.createElement('canvas')) as HTMLCanvasElement;
-  if (ctx) context.enableContextAntialiasing(ctx);
+  if (ctx) {
+    context.enableContextAntialiasing(ctx);
+  }
 
   const { model, step } = await archaic({
     ...rest,
     context,
     target,
     onStep: async (model, step) => {
-      if (onStep) await onStep(model, step);
+      if (onStep) {
+        await onStep(model, step);
+      }
 
       if (ctx) {
         const { width, height } = model.current;
