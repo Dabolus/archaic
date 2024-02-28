@@ -79,7 +79,7 @@ export default async ({
   });
 
   const step = async (index: number): Promise<boolean | number> => {
-    await onStep?.(model, step);
+    await onStep?.(model, index);
 
     const candidates = model.step({
       shapeType,
