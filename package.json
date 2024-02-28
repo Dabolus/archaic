@@ -23,6 +23,9 @@
     "prepublishOnly": "bun run build",
     "test": "bun test"
   },
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=18"
   },
