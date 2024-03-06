@@ -21,7 +21,9 @@
     "build": "bun run clean && tsc",
     "clean": "del dist",
     "prepublishOnly": "bun run build",
-    "test": "bun test"
+    "test": "concurrently --prefix name --names 'NODE,BROWSER' --prefix-colors bgGreen,bgYellow 'bun run test:node' 'bun run test:browser'",
+    "test:node": "bun test src/lib src/entrypoints/node.test.ts",
+    "test:browser": "web-test-runner"
   },
   "files": [
     "dist"
@@ -51,10 +53,14 @@
     "genetic"
   ],
   "devDependencies": {
+    "@esm-bundle/chai": "^4.3.4-fix.0",
     "@types/bun": "^1.0.8",
     "@types/get-pixels": "^3.3.4",
     "@types/ndarray": "^1.0.14",
     "@types/save-pixels": "^2.3.4",
+    "@web/dev-server-esbuild": "^1.0.2",
+    "@web/test-runner": "^0.18.0",
+    "concurrently": "^8.2.2",
     "del-cli": "^1.1.0",
     "eslint": "^8.57.0",
     "tempy": "^3.1.0",
