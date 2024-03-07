@@ -64,14 +64,25 @@ export const enableContextAntialiasing = (
   ctx.imageSmoothingEnabled = true;
 };
 
+export const createCanvas = (
+  width: number,
+  height: number,
+): HTMLCanvasElement | OffscreenCanvas => {
+  if (typeof OffscreenCanvas !== 'undefined') {
+    return new OffscreenCanvas(width, height);
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
+};
+
 export const createImage = (
   width: number,
   height: number,
   fillColor?: RGBAColor,
 ): ContextImageData => {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d')!;
   if (fillColor) {
     ctx.fillStyle = cssrgba(fillColor);
