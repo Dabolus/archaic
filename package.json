@@ -53,6 +53,7 @@
     "genetic"
   ],
   "devDependencies": {
+    "@easy-worker/core": "^0.1.0",
     "@esm-bundle/chai": "^4.3.4-fix.0",
     "@types/bun": "^1.0.8",
     "@types/get-pixels": "^3.3.4",

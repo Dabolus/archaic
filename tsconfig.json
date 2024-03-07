@@ -15,5 +15,10 @@
     "outDir": "dist"
   },
   "include": ["src"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.test.ts",
+    "src/entrypoints/*-test-worker.ts"
+  ]
 }
